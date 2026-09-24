@@ -40,15 +40,14 @@ export function Report() {
 }
 ```
 
-The full React example adds a custom metric renderer and leaves all other blocks to the package. To run it from this repository, install the release tarball into this example project, then install dependencies and start Vite:
+The full React example adds a custom metric renderer and leaves all other blocks to the package. This repository already pins the release tarball in `package.json`; install dependencies and start Vite:
 
 ```sh
-pnpm add ./min-infograph-core-0.2.1.tgz
-pnpm install
+pnpm install --frozen-lockfile
 pnpm dev:renderer
 ```
 
-Copy the release tarball into the repository root before running `pnpm add`, or substitute its local path. The app serves this repository's `/assets/` directory, so local image references work in the preview.
+The app serves this repository's `/assets/` directory, so local image references work in the preview.
 
 ## Static site without a build step
 
