@@ -1,6 +1,6 @@
 # Min Infograph examples
 
-Curated documents and renderer experiments for [Min Infograph](https://github.com/min-infograph/min-infograph). The JSON files demonstrate the current `0.1` document format: layouts, reusable content widgets, Mermaid diagrams, local images, and diagram appearance controls.
+Curated IR documents, package installation examples, and host integrations for [Min Infograph](https://github.com/min-infograph/min-infograph). The documents demonstrate grid and poster layouts, Mermaid diagrams, local images, and built-in widgets.
 
 ## Examples
 
@@ -10,40 +10,67 @@ Curated documents and renderer experiments for [Min Infograph](https://github.co
 | [temporal.json](examples/temporal.json) | Multiple diagrams composed with explanatory widgets |
 | [style-study.json](examples/style-study.json) | Theme and document shape choices |
 | [mermaid-appearance.json](examples/mermaid-appearance.json) | Per-diagram font size, Mermaid node shapes, and static node effects |
-| [emotion-decisions.json](examples/emotion-decisions.json) | Poster layout with cards, flow lanes, steps, takeaways, and other widgets |
+| [emotion-decisions.json](examples/emotion-decisions.json) | Poster layout with cards, flow lanes, steps, and takeaways |
 | [opportunity-ai.json](examples/opportunity-ai.json) | Image-backed poster widgets and local raster assets |
 
-The JSON files are copied from the current source project and retain its `/assets/...` URLs. A compatible host should serve this repository's `assets/` directory at `/assets/`, or rewrite those paths when loading the documents.
+The JSON documents are portable. Documents that refer to local images use `/assets/...`; serve this repository's `assets/` directory at `/assets/`, or set the renderer's `assetBase` to the host path that contains those files.
 
-## Run the renderer example
+## React app with npm or pnpm
 
-The React example loads the valid `ai-agent.json` document and overrides its `metric` block with a custom field-note card. Other block types fall through to simple host renderers. The Mermaid source is shown as text in this focused demo; the core workbench renders the diagram itself.
+The Vite example imports the published package, validates the JSON as IR, and renders it with the package's built-in widgets. It also replaces the metric widget with an app-specific React component. See [src/main.tsx](src/main.tsx).
+
+Install the GitHub Release tarball in your application (use the release asset URL for the version you want):
 
 ```sh
-pnpm install
-pnpm dev:renderer
-pnpm build:renderer
+npm install 'https://github.com/min-infograph/min-infograph/releases/download/v0.2.1/min-infograph-core-0.2.1.tgz?download=1'
+# or
+pnpm add 'https://github.com/min-infograph/min-infograph/releases/download/v0.2.1/min-infograph-core-0.2.1.tgz?download=1'
 ```
 
-The callback registry in `src/main.tsx` follows the core renderer's `renderers` prop: block type keys, a callback receiving the block and render context, and `null` to use the built-in widget. This demo keeps a small local type definition so it can build independently before npm publication; when using the core workspace, import its `BlockRendererRegistry` and `Infographic` exports.
+Then import the renderer, validator, and stylesheet:
 
-## Use documents with the core project
+```tsx
+import { Infographic, validateIR } from "@min-infograph/core";
+import "@min-infograph/core/styles.css";
 
-Install the [Min Infograph monorepo](https://github.com/min-infograph/min-infograph) and use its workbench/CLI to open or render a JSON file from this repository. For documents with local image references, make the repository's `assets/` directory available at `/assets/` in the selected host, or rewrite `/assets/...` URLs to your asset base. The original `infographics-map` proof of concept was the source for this collection; these files preserve its `0.1` format and examples as a migration baseline.
+const ir = validateIR(documentJson);
 
-## Extending the renderer
+export function Report() {
+  return <Infographic ir={ir} assetBase="/" />;
+}
+```
 
-The core renderer accepts overrides for existing grid block types while keeping documents valid for every host. [The renderer example](renderers/custom-renderer.md) shows the contract. Registering new document block types remains future work.
+The full React example adds a custom metric renderer and leaves all other blocks to the package. To run it from this repository, install the release tarball into this example project, then install dependencies and start Vite:
 
-## Validate documents
+```sh
+pnpm add ./min-infograph-core-0.2.1.tgz
+pnpm install
+pnpm dev:renderer
+```
+
+Copy the release tarball into the repository root before running `pnpm add`, or substitute its local path. The app serves this repository's `/assets/` directory, so local image references work in the preview.
+
+## Static site without a build step
+
+The [static example](static/index.html) loads the self-contained browser script and stylesheet from the versioned GitHub Pages CDN. It uses plain HTML and JavaScript with no framework or bundler. Serve this repository over HTTP:
+
+```sh
+python3 -m http.server 8000
+```
+
+Open `http://localhost:8000/static/`. The release publishes the same bundle and `min-infograph-core-0.2.1.styles.css` as GitHub Release downloads for self-hosting. See [static/README.md](static/README.md) for the integration details and upgrade steps.
+
+## Validate and build
 
 Requires Node.js 22.14 or newer and pnpm 12.6.0.
 
 ```sh
+pnpm install --frozen-lockfile
 pnpm validate
+pnpm build:renderer
 ```
 
-This checks JSON syntax, core document structure, Mermaid block declarations, and referenced local images. It is a repository sanity check, not a replacement for the core renderer's full schema validator.
+`pnpm validate` checks JSON syntax, document structure, Mermaid declarations, referenced local images, and the static example's expected release asset references. The package build check type-checks the React host example and builds the Vite preview.
 
 ## License
 

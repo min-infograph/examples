@@ -1,11 +1,30 @@
 import { readdir, readFile, access } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import packageJson from "../package.json" with { type: "json" };
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const examplesDir = path.join(root, "examples");
 const files = (await readdir(examplesDir)).filter((name) => name.endsWith(".json")).sort();
 const errors = [];
+
+const releaseTarball = "https://github.com/min-infograph/min-infograph/releases/download/v0.2.1/min-infograph-core-0.2.1.tgz?download=1";
+if (packageJson.dependencies?.["@min-infograph/core"] !== releaseTarball) {
+  errors.push("package.json: @min-infograph/core must install from the documented v0.2.1 release tarball");
+}
+
+const staticPage = await readFile(path.join(root, "static/index.html"), "utf8");
+for (const expected of [
+  "https://min-infograph.github.io/min-infograph/core/v0.2.1/min-infograph-core-0.2.1.browser.js",
+  "https://min-infograph.github.io/min-infograph/core/v0.2.1/min-infograph-core-0.2.1.styles.css",
+  "window.MinInfograph",
+  "fetch(\"../examples/ai-agent.json\")",
+  "validateIR(documentJson)",
+  "render(mount, ir",
+]) {
+  if (!staticPage.includes(expected)) errors.push(`static/index.html: missing integration reference ${expected}`);
+}
+if (/type=["']module["']/.test(staticPage)) errors.push("static/index.html: static integration should use classic scripts without a module build step");
 
 if (files.length === 0) errors.push("No JSON examples found.");
 

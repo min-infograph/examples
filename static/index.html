@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Render a Min Infograph document on a static website." />
+    <title>Min Infograph · Static site example</title>
+    <link rel="stylesheet" href="https://min-infograph.github.io/min-infograph/core/v0.2.1/min-infograph-core-0.2.1.styles.css" />
+    <style>
+      :root { color-scheme: light; font: 16px/1.5 system-ui, sans-serif; color: #23372f; background: #f4f3ef; }
+      * { box-sizing: border-box; }
+      body { margin: 0; }
+      main { width: min(1100px, calc(100% - 32px)); margin: 32px auto; }
+      .intro { margin-bottom: 20px; }
+      .intro p { color: #59645d; }
+      pre { padding: 16px; overflow: auto; background: #fff; border: 1px solid #d8ddd5; border-radius: 8px; }
+      .error { color: #9c332b; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header class="intro">
+        <p>MIN INFOGRAPH / STATIC HTML</p>
+        <h1>Render a document on a static site</h1>
+        <p>This page loads the release browser bundle and stylesheet directly. It has no framework or build step.</p>
+      </header>
+      <div id="infographic" aria-live="polite"></div>
+      <p id="error" class="error" role="alert"></p>
+    </main>
+    <script src="https://min-infograph.github.io/min-infograph/core/v0.2.1/min-infograph-core-0.2.1.browser.js"></script>
+    <script>
+      const mount = document.getElementById("infographic");
+      const error = document.getElementById("error");
+      fetch("../examples/ai-agent.json")
+        .then((response) => {
+          if (!response.ok) throw new Error(`Could not load the document (${response.status})`);
+          return response.json();
+        })
+        .then((documentJson) => {
+          const { validateIR, render } = window.MinInfograph;
+          const ir = validateIR(documentJson);
+          render(mount, ir, { assetBase: "../" });
+        })
+        .catch((cause) => {
+          error.textContent = `Could not render this example: ${cause instanceof Error ? cause.message : String(cause)}`;
+        });
+    </script>
+  </body>
+</html>
