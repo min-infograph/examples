@@ -1,0 +1,22 @@
+{
+  "name": "@min-infograph/examples",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.6.0",
+  "engines": { "node": ">=22.14" },
+  "scripts": {
+    "validate": "node scripts/validate.mjs",
+    "dev:renderer": "vite --host 127.0.0.1",
+    "build:renderer": "tsc -b && vite build"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^5.0.0",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "typescript": "7.0.2",
+    "vite": "^7.1.5"
+  }
+}

@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+:root { font-family: 'DM Sans', sans-serif; color: #222722; background: #f4f3ef; font-synthesis: none; }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; }
+.sheet { max-width: 1100px; margin: 40px auto; padding: clamp(22px, 5vw, 64px); background: #fbfaf7; border: 1px solid #e2e2d9; }
+header { padding-bottom: 30px; border-bottom: 1px solid #d9d9cf; }
+.eyebrow, .metric-topline, .metric-bottom, footer { font: 500 10px 'DM Mono', monospace; letter-spacing: .08em; color: #69726b; }
+h1 { font: 600 clamp(36px, 6vw, 64px) 'Space Grotesk', sans-serif; letter-spacing: -.055em; margin: 22px 0 8px; }
+.subtitle { color: #69726b; margin: 0; font-size: 17px; }
+.grid { display: grid; grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); gap: 14px; padding: 22px 0; }
+.block { min-width: 0; }
+.card, .metric-widget { height: 100%; min-height: 210px; padding: 24px; background: #fff; border: 1px solid #e5e6dc; border-radius: 14px; }
+.card h2, .metric-widget h2 { font: 600 21px 'Space Grotesk', sans-serif; margin: 8px 0 12px; }
+.card p:not(.eyebrow) { line-height: 1.65; color: #48534d; }
+.diagram { grid-column: span 2; min-height: 265px; background: #f1f5f0; }
+.diagram pre { padding: 15px; overflow: auto; color: #314f47; background: #e8eee8; border-radius: 8px; font: 13px/1.6 'DM Mono', monospace; }
+.diagram small { color: #738077; }
+.callout { background: #eef4f0; border-left: 4px solid #4f7c67; }
+.callout--warning { border-left-color: #d08b3e; background: #fbf4e8; }
+.metric-widget { display: flex; flex-direction: column; color: #f8faf5; background: #23372f; border-color: #23372f; }
+.metric-topline { display: flex; align-items: center; gap: 8px; color: #b7c7b8; }
+.metric-dot { width: 7px; height: 7px; background: #b3d07d; border-radius: 50%; }
+.metric-value { font: 600 74px/.95 'Space Grotesk', sans-serif; letter-spacing: -.08em; margin: 26px 0 0; color: #e2edc8; }
+.metric-widget h2 { text-transform: uppercase; letter-spacing: .03em; margin: 6px 0; }
+.metric-detail { color: #c6d0c8; font-size: 13px; line-height: 1.5; margin: 0 0 22px; }
+.metric-bottom { display: flex; justify-content: space-between; gap: 5px; padding-top: 13px; margin-top: auto; border-top: 1px solid #50635a; color: #aab9ad; font-size: 8px; }
+footer { display: flex; justify-content: space-between; gap: 12px; padding-top: 14px; border-top: 1px solid #d9d9cf; }
+@media (max-width: 700px) { .sheet { margin: 0; border: 0; min-height: 100vh; } .grid { grid-template-columns: 1fr; } .block { grid-column: span 1 !important; } .diagram { grid-column: span 1; } footer { flex-direction: column; } }
